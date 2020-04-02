@@ -6,7 +6,7 @@ const database = "";
 // See references down below base schema on
 
 let qaSchema = new mongoose.Schema({
-  productID: Number,
+  product_id: Number,
   question: [
     {
       id: Number, // PK
