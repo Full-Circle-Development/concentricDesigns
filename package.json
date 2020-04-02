@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/Full-Circle-Development/concentricDesigns/issues"
   },
-  "homepage": "https://github.com/Full-Circle-Development/concentricDesigns#readme"
+  "homepage": "https://github.com/Full-Circle-Development/concentricDesigns#readme",
+  "dependencies": {
+    "mongoose": "^5.9.7",
+    "pg": "^8.0.0",
+    "validator": "^13.0.0"
+  }
 }
