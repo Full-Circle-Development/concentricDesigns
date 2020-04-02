@@ -17,17 +17,17 @@ CREATE TABLE questions (
 
 CREATE TABLE answers (
     id SERIAL PRIMARY Key,
-    question_id INT REFERENCES questions(question_id),
+    question_id INT REFERENCES questions(id),
     body VARCHAR(1000) NOT NULL,
     date_written DATE,
     answerer_name VARCHAR(60) NOT NULL,
     answerer_email VARCHAR(60) NOT NULL,
     reported INT NOT NULL,
-    helpful INT NOT NULL,
+    helpful INT NOT NULL
 );
 
 CREATE TABLE answers_photos (
     id SERIAL PRIMARY KEY,
-    answers_id INT REFERENCES answers(answer_id),
+    answers_id INT REFERENCES answers(id),
     url TEXT[5]
 );
