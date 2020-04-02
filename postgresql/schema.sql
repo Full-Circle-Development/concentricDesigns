@@ -30,4 +30,4 @@ CREATE TABLE answers_photos (
     answer_photo_id SERIAL PRIMARY KEY,
     answer_photo_answers_id INT REFERENCES answers(answer_id),
     answer_photo_url TEXT[5]
-)
+);
