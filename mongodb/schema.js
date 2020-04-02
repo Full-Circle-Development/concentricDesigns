@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const server = "";
+const database = "";
 
 // See references down below base schema on
 
