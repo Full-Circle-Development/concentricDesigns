@@ -7,37 +7,45 @@ let qaSchema = new mongoose.Schema({
   productID: Number,
   question: [
     {
-      id: Number,
+      id: Number, // PK
       body: String,
-      date: String,
+      date: Date,
       name: String,
-      email: String,
-      reported: Number,
-      helpful: Number
-    }
-  ],
-  answers: [
-    {
-      id: Number,
-      questionID: Number,
-      body: String,
-      date: String,
-      name: String,
-      email: String,
+      email: {
+        type: String,
+        required: true,
+        unique: true
+      },
       reported: Number,
       helpful: Number,
-      photos: [
+      answers: [
         {
-          id: Number,
-          answerID: Number,
-          url: [String]
+          id: Number, // PK
+          questionID: Number, // FK for question id
+          body: String,
+          date: Date,
+          name: String,
+          email: {
+            type: String,
+            required: true,
+            unique: true
+          },
+          reported: Number,
+          helpful: Number,
+          photos: [
+            {
+              id: Number, // PK
+              answerID: Number, // FD for answers id
+              url: String
+            }
+          ]
         }
       ]
     }
   ]
 });
 
-modules.exports = mongoose.model("QA", qaSchema);
+modules.exports = mongoose.model("qa", qaSchema);
 
 /*
 ////// REFERENCE FOR Questions ////////
