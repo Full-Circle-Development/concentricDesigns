@@ -28,6 +28,6 @@ CREATE TABLE answers (
 
 CREATE TABLE answers_photos (
     id SERIAL PRIMARY KEY,
-    answers_id INT REFERENCES answers(id),
-    url TEXT[5]
+    answer_id INT REFERENCES answers(id),
+    url TEXT
 );
