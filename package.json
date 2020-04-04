@@ -4,7 +4,7 @@
   "description": "Back-End Optimization of project-titan",
   "main": "index.js",
   "scripts": {
-    "start-mongo": "nodemon src/mongodb/index.js",
+    "start": "nodemon src/postgresql/pgconfig.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +20,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "faker": "^4.1.0",
     "pg": "^8.0.0"
   },
   "devDependencies": {
