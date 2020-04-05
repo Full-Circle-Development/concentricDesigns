@@ -7,9 +7,29 @@ let randomName = faker.name.findName();
   /* <script> */
 }
 let data = [
-  ["Foo", "programmer"],
-  ["Bar", "bus driver"],
-  ["Moo", "Reindeer Hunter"],
+  [
+    "id",
+    "product_id",
+    "body",
+    "date_written",
+    "asker_name",
+    "asker_email",
+    "reported",
+    "helpful",
+  ],
+  [
+    3521635,
+    1000012,
+    faker.lorem.sentence(),
+    faker.date.recent(),
+    faker.name.firstName() + faker.name.lastName(),
+    faker.internet.email(),
+    0,
+    1,
+    // faker.fake(
+    //   "{{lorem.sentence}}, {{date.recent}}, {{name.firstName name.lastName}}, {{internet.email}}, 0, 1"
+    // ),
+  ],
 ];
 
 const download_csv = () => {
