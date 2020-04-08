@@ -8,7 +8,7 @@ const pool = new Pool({
 // };
 
 const getAllQuestions = async (product_id) => {
-  const values = [product_id];
+  const values = [product_id]; // might need to account for other params like page, sort, and count
   const res = await pool.query(
     "SELECT * FROM questions WHERE product_id = $1",
     values

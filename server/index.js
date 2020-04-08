@@ -1,8 +1,8 @@
 import express from "express";
-import pool from "./postgresql/pgconfig.js";
+import pool from "../postgresql/pgconfig.js";
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const db = require("./postgresql/pgconfig.js").default;
+const db = require("../postgresql/pgconfig.js").default;
 
 const app = express();
 const PORT = 3000;
