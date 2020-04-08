@@ -8,11 +8,11 @@ CREATE TABLE questions (
     id SERIAL PRIMARY KEY NOT NULL,
     product_id INT NOT NULL,
     body VARCHAR(1000) NOT NULL,
-    date_written DATE NOT NULL,
+    date_written DATE,
     asker_name VARCHAR(60) NOT NULL,
     asker_email VARCHAR(60) NOT NULL,
-    reported INT NOT NULL,
-    helpful INT NOT NULL
+    reported INT,
+    helpful INT
 );
 
 CREATE TABLE answers (

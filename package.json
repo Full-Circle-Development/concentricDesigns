@@ -4,7 +4,7 @@
   "description": "Back-End Optimization of project-titan",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/postgresql/pgconfig.js",
+    "start": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +19,8 @@
   "homepage": "https://github.com/Full-Circle-Development/concentricDesigns#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "exit-hook": "^2.2.0",
     "express": "^4.17.1",
     "faker": "^4.1.0",
     "pg": "^8.0.0"
