@@ -22,8 +22,8 @@ CREATE TABLE answers (
     date_written DATE,
     answerer_name VARCHAR(60) NOT NULL,
     answerer_email VARCHAR(60) NOT NULL,
-    reported INT NOT NULL,
-    helpful INT NOT NULL
+    reported INT,
+    helpful INT
 );
 
 CREATE TABLE answers_photos (

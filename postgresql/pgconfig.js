@@ -39,8 +39,11 @@ const postQuestion = (product_id, question) => {
   const values = [
     product_id,
     question.body,
+    // question.date_written,
     question.asker_name,
     question.asker_email,
+    // question.reported,
+    // question.helpful,
   ];
   return pool
     .query(
