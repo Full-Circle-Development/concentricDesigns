@@ -11,13 +11,13 @@ CREATE TABLE questions (
     question_date DATE,
     asker_name VARCHAR(60) NOT NULL,
     asker_email VARCHAR(60) NOT NULL,
-    helpfulness INT,
+    question_helpfulness INT, -- I changed helpfulness to question_helpfulness
     reported INT
 );
 
 CREATE TABLE answers (
     answer_id SERIAL PRIMARY Key NOT NULL,
-    question_id INT REFERENCES questions(id),
+    question_id INT REFERENCES questions(question_id),
     body VARCHAR(1000) NOT NULL,
     date DATE,
     answerer_name VARCHAR(60) NOT NULL,
@@ -28,6 +28,7 @@ CREATE TABLE answers (
 
 CREATE TABLE answers_photos (
     photo_id SERIAL PRIMARY KEY NOT NULL,
-    answer_id INT REFERENCES answers(id),
+    answer_id INT REFERENCES answers(answer_id),
     url TEXT
 );
+
