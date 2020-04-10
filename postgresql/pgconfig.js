@@ -9,17 +9,61 @@ const pool = new Pool({
 const getAllQuestions = (product_id) => {
   const values = [product_id]; // might need to account for queries like page, sort, and count
   return pool
-    .query("SELECT * FROM questions WHERE product_id = $1", values)
+    .query(
+      `SELECT questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.helpfulness, questions.reported, answers.*, answers_photos.url 
+      FROM questions LEFT JOIN answers ON questions.question_id = answers.question_id 
+      LEFT JOIN answers_photos ON answers.answer_id = answers_photos.answer_id 
+      WHERE questions.product_id = $1 ORDER BY questions.question_id ASC`,
+      values
+    )
     .then((res) => {
+      let productID = values[0]; // better way?
+      //   let count = Number(req.query.count) || 5;
+      //   let offset = Number(req.query.page * count) || 0;
       let resy = res.rows;
+      let resultsArr = [];
+      let photosArr = [];
+
+      for (let i = 0; i < res.rows.length; i++) {
+        if (res.rows[i] === `product_id: ${productID}`) {
+          continue;
+        }
+        // console.log(res.rows[4]);
+        resultsArr.push(res.rows[i]);
+      }
+
       let resultObj = {
-        product_id: resy[0].product_id,
-        results: res.rows,
+        product_id: productID,
+        results: resultsArr,
       };
       return resultObj;
+      // })
     })
     .catch((err) => err);
 };
+
+// ex.
+// {
+//   "product_id": "5",
+//   "results": [{
+//         "question_id": 37,
+//         "question_body": "Why is this product cheaper here than other sites?",
+//         "question_date": "2018-10-18T00:00:00.000Z",
+//         "asker_name": "williamsmith",
+//         "question_helpfulness": 4,
+//         "reported": 0,
+//         "answers": {
+//           68: {
+//             "id": 68,
+//             "body": "We are selling it here without any markup from the middleman!",
+//             "date": "2018-08-18T00:00:00.000Z",
+//             "answerer_name": "Seller",
+//             "helpfulness": 4,
+//             "photos": []
+//             // ...
+//           }
+//         }
+//       },
 
 // GET ALL ANSWERS FOR A GIVEN QUESTION
 
