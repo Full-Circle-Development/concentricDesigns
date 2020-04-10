@@ -5,29 +5,29 @@ CREATE DATABASE qa;
 \c qa;
 
 CREATE TABLE questions (
-    id SERIAL PRIMARY KEY NOT NULL,
+    question_id SERIAL PRIMARY KEY NOT NULL,
     product_id INT NOT NULL,
-    body VARCHAR(1000) NOT NULL,
-    date_written DATE,
+    question_body VARCHAR(1000) NOT NULL,
+    question_date DATE,
     asker_name VARCHAR(60) NOT NULL,
     asker_email VARCHAR(60) NOT NULL,
-    reported INT,
-    helpful INT
+    helpfulness INT,
+    reported INT
 );
 
 CREATE TABLE answers (
-    id SERIAL PRIMARY Key,
+    answer_id SERIAL PRIMARY Key NOT NULL,
     question_id INT REFERENCES questions(id),
     body VARCHAR(1000) NOT NULL,
-    date_written DATE,
+    date DATE,
     answerer_name VARCHAR(60) NOT NULL,
     answerer_email VARCHAR(60) NOT NULL,
-    reported INT,
-    helpful INT
+    helpfulness INT,
+    reported INT
 );
 
 CREATE TABLE answers_photos (
-    id SERIAL PRIMARY KEY,
+    photo_id SERIAL PRIMARY KEY NOT NULL,
     answer_id INT REFERENCES answers(id),
     url TEXT
 );
