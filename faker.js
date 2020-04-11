@@ -37,3 +37,5 @@ streamy.end();
 const end = performance.now();
 console.log("Total time in seconds: ", end - start);
 console.log("Total time in minutes: ", (end - start) / 60000);
+
+// what about Math.ceil(Math.Random()*maxid)) for route randomness with K6???

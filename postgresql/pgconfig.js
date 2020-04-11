@@ -8,98 +8,66 @@ const pool = new Pool({
 
 const getAllQuestions = (product_id) => {
   const values = [product_id]; // might need to account for queries like page, sort, and count
-  return (
-    pool
-      .query(
-        `SELECT DISTINCT ON (answers.answer_id) questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.helpfulness, questions.reported, answers.*, answers_photos.url 
+  return pool
+    .query(
+      `SELECT DISTINCT ON (questions.question_id, answers.answer_id) questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.helpfulness, questions.reported, answers.*, answers_photos.url 
       FROM questions LEFT JOIN answers ON questions.question_id = answers.question_id 
       LEFT JOIN answers_photos ON answers.answer_id = answers_photos.answer_id 
-      WHERE questions.product_id = $1`, // ORDER BY questions.question_id ASC
-        values
-      )
-      // I think the query is good, but the below is off
-      .then((res) => {
-        let productID = values[0];
-        let resRow = res.rows;
-        let answerID = resRow[Number(productID)].answer_id;
+      WHERE questions.product_id = $1 ORDER BY questions.question_id ASC, answers.answer_id ASC`, // ORDER BY questions.question_id ASC
+      values
+    )
+    .then((res) => {
+      let productID = values[0];
+      let resRow = res.rows;
+      let answersObj = {};
+      let resultObj = {
+        product_id: productID,
+        results: [],
+      };
+
+      for (let i = 0; i < resRow.length; i++) {
         let photosArr = [];
-        let answersObj = {};
-        let questionsObj = {};
-        // let photosArr = [resRow[Number(productID)].url];
-
-        let resultObj = {
-          product_id: productID,
-          results: [],
-        };
-
-        for (let i = 0; i < resRow.length; i++) {
-          if (resRow[i].url) {
-            photosArr.push(resRow[i].url);
-          }
-
-          if (resRow[i].answer_id) {
-            answersObj[resRow[i].answer_id] = {
-              id: resRow[i].answer_id,
-              body: resRow[i].body,
-              date: resRow[i].date,
-              answerer_name: resRow[i].answerer_name,
-              helpfulness: resRow[i].helpfulness, // might be pulling question helpfullness
-              photos: photosArr,
-            };
-          }
-
-          if (resRow[i].question_id) {
-            let questionsObj = {
-              question_id: resRow[i].question_id,
-              question_body: resRow[i].question_body,
-              question_date: resRow[i].question_date,
-              asker_name: resRow[i].asker_name,
-              question_helpfulness: resRow[i].helpfulness,
-              reported: resRow[i].reported,
-              answers: answersObj,
-            };
-            resultObj.results.push(questionsObj);
-          }
-
-          photosArr = [];
-          // if (resRow[i].question_id) {
-          //   (questionsObj["question_id"] = resRow[i].question_id),
-          //     (questionsObj["question_body"] = resRow[i].question_body),
-          //     (questionsObj["question_date"] = resRow[i].question_date),
-          //     (questionsObj["asker_name"] = resRow[i].asker_name),
-          //     (questionsObj["helpfulness"] = resRow[i].helpfulness),
-          //     (questionsObj["reported"] = resRow[i].reported),
-          //     (questionsObj["answers"] = answersObj);
-          // }
+        if (resRow[i].url) {
+          photosArr.push(resRow[i].url);
         }
 
-        return resultObj;
-      })
-      .catch((err) => err)
-  );
+        if (resRow[i].answer_id) {
+          answersObj[resRow[i].answer_id] = {
+            // Has to be a number?? Can't figure out how!
+            id: resRow[i].answer_id,
+            body: resRow[i].body,
+            date: resRow[i].date,
+            answerer_name: resRow[i].answerer_name,
+            helpfulness: resRow[i].helpfulness, // might be pulling question helpfullness
+            photos: photosArr,
+          };
+
+          if (resRow[i + 1]) {
+            if (resRow[i].question_id === resRow[i + 1].question_id) {
+              continue;
+            }
+          }
+        }
+
+        let questionsObj = {
+          question_id: resRow[i].question_id, // might be pulling answer's question ID and it doesn't always exist
+          question_body: resRow[i].question_body,
+          question_date: resRow[i].question_date,
+          asker_name: resRow[i].asker_name,
+          question_helpfulness: resRow[i].helpfulness,
+          reported: resRow[i].reported,
+          answers: answersObj,
+        };
+
+        resultObj.results.push(questionsObj);
+        photosArr = [];
+        answersObj = {};
+      }
+
+      return resultObj;
+    })
+    .catch((err) => err);
 };
-
-// let answersObj = {
-//   [answerID]: {
-//     // need to make this a number!?!?!
-//     id: answerID,
-//     body: resRow[Number(productID)].body,
-//     date: resRow[Number(productID)].date,
-//     answerer_name: resRow[Number(productID)].answerer_name,
-//     helpfulness: resRow[Number(productID)].helpfulness, // pulling same one as question and not answer?
-//     photos: photosArr,
-//   },
-// };
-
-// let questionsObj = {
-//   questions_id: resRow[Number(productID)].question_id,
-//   question_body: resRow[Number(productID)].question_body,
-//   question_date: resRow[Number(productID)].question_date,
-//   asker_name: resRow[Number(productID)].asker_name,
-//   question_helpfulness: resRow[Number(productID)].helpfulness,
-//   reported: resRow[Number(productID)].reported,
-//   answers: answersObj,
-// };
 
 // ex.
 // {
