@@ -10,34 +10,46 @@ const getAllQuestions = (product_id) => {
   const values = [product_id]; // might need to account for queries like page, sort, and count
   return pool
     .query(
-      `SELECT questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.helpfulness, questions.reported, answers.*, answers_photos.url 
+      `SELECT DISTINCT questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.helpfulness, questions.reported, answers.*, answers_photos.url 
       FROM questions LEFT JOIN answers ON questions.question_id = answers.question_id 
       LEFT JOIN answers_photos ON answers.answer_id = answers_photos.answer_id 
       WHERE questions.product_id = $1 ORDER BY questions.question_id ASC`,
       values
     )
     .then((res) => {
-      let productID = values[0]; // better way?
-      //   let count = Number(req.query.count) || 5;
-      //   let offset = Number(req.query.page * count) || 0;
+      let productID = values[0];
       let resy = res.rows;
-      let resultsArr = [];
-      let photosArr = [];
+      let answerID = resy[Number(`${productID}`)].answer_id;
 
-      for (let i = 0; i < res.rows.length; i++) {
-        if (res.rows[i] === `product_id: ${productID}`) {
-          continue;
-        }
-        // console.log(res.rows[4]);
-        resultsArr.push(res.rows[i]);
-      }
+      let photosArr = [resy[Number(`${productID}`)].url];
+
+      let answersObj = {
+        [answerID]: {
+          // need to make this a number!?!?!
+          id: answerID,
+          body: resy[Number(`${productID}`)].body,
+          date: resy[Number(`${productID}`)].date,
+          answerer_name: resy[Number(`${productID}`)].answerer_name,
+          helpfulness: resy[Number(`${productID}`)].helpfulness, // pulling same one as question and not answer?
+          photos: photosArr,
+        },
+      };
+
+      let questionsObj = {
+        questions_id: resy[Number(`${productID}`)].question_id,
+        question_body: resy[Number(`${productID}`)].question_body,
+        question_date: resy[Number(`${productID}`)].question_date,
+        asker_name: resy[Number(`${productID}`)].asker_name,
+        question_helpfulness: resy[Number(`${productID}`)].helpfulness,
+        reported: resy[Number(`${productID}`)].reported,
+        answers: answersObj,
+      };
 
       let resultObj = {
         product_id: productID,
-        results: resultsArr,
+        results: [questionsObj],
       };
       return resultObj;
-      // })
     })
     .catch((err) => err);
 };
