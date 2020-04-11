@@ -21,6 +21,7 @@ app.get("/qa/:product_id", (req, res) => {
   pool
     .getAllQuestions(req.params.product_id)
     .then((results) => res.send(results))
+    .then(() => res.sendStatus(200))
     .catch((err) => err);
 });
 
@@ -43,11 +44,44 @@ app.post("/qa/:product_id", (req, res) => {
 });
 
 // POST AN ANSWER
-
-app.post("qa/:question_id/answers", (req, res) => {
+app.post("/qa/:question_id/answers", (req, res) => {
   pool
     .postAnswer(req.params.question_id, req.body)
     .then(() => res.sendStatus(201))
+    .catch((err) => console.log(err));
+});
+
+///// PUT ROUTES /////
+
+// PUT QUESTION HELPFUL
+app.put("/qa/question/:question_id/helpful", (req, res) => {
+  pool
+    .putQuestionHelpful(req.params.question_id)
+    .then(() => res.sendStatus(204))
+    .catch((err) => console.log(err));
+});
+
+// PUT QUESTION REPORTED
+app.put("/qa/question/:question_id/report", (req, res) => {
+  pool
+    .putQuestionReported(req.params.question_id)
+    .then(() => res.sendStatus(204))
+    .catch((err) => console.log(err));
+});
+
+// PUT ANSWER HELPFUL
+app.put("/qa/answer/:answer_id/report", (req, res) => {
+  pool
+    .putAnswerHelpful(req.params.answer_id)
+    .then(() => res.sendStatus(204))
+    .catch((err) => console.log(err));
+});
+
+// PUT ANSWER REPORTED
+app.put("/qa/answer/:answer_id/report", (req, res) => {
+  pool
+    .putAnswerReported(req.params.answer_id)
+    .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
 });
 

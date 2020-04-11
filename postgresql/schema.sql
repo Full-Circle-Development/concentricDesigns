@@ -11,7 +11,7 @@ CREATE TABLE questions (
     question_date DATE,
     asker_name VARCHAR(60) NOT NULL,
     asker_email VARCHAR(60) NOT NULL,
-    question_helpfulness INT, -- I changed helpfulness to question_helpfulness
+    question_helpfulness INT, 
     question_reported INT
 );
 
