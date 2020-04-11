@@ -18,41 +18,85 @@ const getAllQuestions = (product_id) => {
     )
     .then((res) => {
       let productID = values[0];
-      let resy = res.rows;
-      let answerID = resy[Number(`${productID}`)].answer_id;
-
-      let photosArr = [resy[Number(`${productID}`)].url];
-
-      let answersObj = {
-        [answerID]: {
-          // need to make this a number!?!?!
-          id: answerID,
-          body: resy[Number(`${productID}`)].body,
-          date: resy[Number(`${productID}`)].date,
-          answerer_name: resy[Number(`${productID}`)].answerer_name,
-          helpfulness: resy[Number(`${productID}`)].helpfulness, // pulling same one as question and not answer?
-          photos: photosArr,
-        },
-      };
-
-      let questionsObj = {
-        questions_id: resy[Number(`${productID}`)].question_id,
-        question_body: resy[Number(`${productID}`)].question_body,
-        question_date: resy[Number(`${productID}`)].question_date,
-        asker_name: resy[Number(`${productID}`)].asker_name,
-        question_helpfulness: resy[Number(`${productID}`)].helpfulness,
-        reported: resy[Number(`${productID}`)].reported,
-        answers: answersObj,
-      };
+      let resRow = res.rows;
+      let answerID = resRow[Number(productID)].answer_id;
+      let photosArr = [];
+      let answersObj = {};
+      let questionsObj = {};
+      // let photosArr = [resRow[Number(productID)].url];
 
       let resultObj = {
         product_id: productID,
-        results: [questionsObj],
+        results: [],
       };
+
+      for (let i = 0; i < resRow.length; i++) {
+        if (resRow[i].url) {
+          photosArr.push(resRow[i].url);
+        }
+
+        if (resRow[i].answer_id) {
+          answersObj[resRow[i].answer_id] = {
+            id: resRow[i].answer_id,
+            body: resRow[i].body,
+            date: resRow[i].date,
+            answerer_name: resRow[i].answerer_name,
+            helpfulness: resRow[i].helpfulness, // might be pulling question helpfullness
+            photos: photosArr,
+          };
+        }
+
+        if (resRow[i].question_id) {
+          let questionsObj = {
+            question_id: resRow[i].question_id,
+            question_body: resRow[i].question_body,
+            question_date: resRow[i].question_date,
+            asker_name: resRow[i].asker_name,
+            question_helpfulness: resRow[i].helpfulness,
+            reported: resRow[i].reported,
+            answers: answersObj,
+          };
+          resultObj.results.push(questionsObj);
+        }
+
+        photosArr = [];
+        // if (resRow[i].question_id) {
+        //   (questionsObj["question_id"] = resRow[i].question_id),
+        //     (questionsObj["question_body"] = resRow[i].question_body),
+        //     (questionsObj["question_date"] = resRow[i].question_date),
+        //     (questionsObj["asker_name"] = resRow[i].asker_name),
+        //     (questionsObj["helpfulness"] = resRow[i].helpfulness),
+        //     (questionsObj["reported"] = resRow[i].reported),
+        //     (questionsObj["answers"] = answersObj);
+        // }
+      }
+
       return resultObj;
     })
     .catch((err) => err);
 };
+
+// let answersObj = {
+//   [answerID]: {
+//     // need to make this a number!?!?!
+//     id: answerID,
+//     body: resRow[Number(productID)].body,
+//     date: resRow[Number(productID)].date,
+//     answerer_name: resRow[Number(productID)].answerer_name,
+//     helpfulness: resRow[Number(productID)].helpfulness, // pulling same one as question and not answer?
+//     photos: photosArr,
+//   },
+// };
+
+// let questionsObj = {
+//   questions_id: resRow[Number(productID)].question_id,
+//   question_body: resRow[Number(productID)].question_body,
+//   question_date: resRow[Number(productID)].question_date,
+//   asker_name: resRow[Number(productID)].asker_name,
+//   question_helpfulness: resRow[Number(productID)].helpfulness,
+//   reported: resRow[Number(productID)].reported,
+//   answers: answersObj,
+// };
 
 // ex.
 // {
