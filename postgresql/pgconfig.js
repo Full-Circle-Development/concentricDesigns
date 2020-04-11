@@ -10,9 +10,9 @@ const getAllQuestions = (product_id) => {
   const values = [product_id]; // might need to account for queries like page, sort, and count
   return pool
     .query(
-      `SELECT DISTINCT ON (questions.question_id, answers.answer_id) questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.helpfulness, questions.reported, answers.*, answers_photos.url 
-      FROM questions LEFT JOIN answers ON questions.question_id = answers.question_id 
-      LEFT JOIN answers_photos ON answers.answer_id = answers_photos.answer_id 
+      `SELECT DISTINCT ON (questions.question_id, answers.answer_id) questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.question_helpfulness, questions.question_reported, answers.*, answers_photos.url 
+      FROM questions LEFT JOIN answers ON questions.question_id = answers.answer_question_id 
+      LEFT JOIN answers_photos ON answers.answer_id = answers_photos.photo_answer_id 
       WHERE questions.product_id = $1 ORDER BY questions.question_id ASC, answers.answer_id ASC`, // ORDER BY questions.question_id ASC
       values
     )
@@ -35,10 +35,10 @@ const getAllQuestions = (product_id) => {
           answersObj[resRow[i].answer_id] = {
             // Has to be a number?? Can't figure out how!
             id: resRow[i].answer_id,
-            body: resRow[i].body,
-            date: resRow[i].date,
+            body: resRow[i].answer_body,
+            date: resRow[i].answer_date,
             answerer_name: resRow[i].answerer_name,
-            helpfulness: resRow[i].helpfulness, // might be pulling question helpfullness
+            helpfulness: resRow[i].answer_helpfulness, // might be pulling question helpfullness
             photos: photosArr,
           };
 
@@ -50,12 +50,12 @@ const getAllQuestions = (product_id) => {
         }
 
         let questionsObj = {
-          question_id: resRow[i].question_id, // might be pulling answer's question ID and it doesn't always exist
+          question_id: resRow[i].question_id,
           question_body: resRow[i].question_body,
           question_date: resRow[i].question_date,
           asker_name: resRow[i].asker_name,
-          question_helpfulness: resRow[i].helpfulness,
-          reported: resRow[i].reported,
+          question_helpfulness: resRow[i].question_helpfulness,
+          reported: resRow[i].question_reported,
           answers: answersObj,
         };
 

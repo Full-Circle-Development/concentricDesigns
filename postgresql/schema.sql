@@ -12,18 +12,18 @@ CREATE TABLE questions (
     asker_name VARCHAR(60) NOT NULL,
     asker_email VARCHAR(60) NOT NULL,
     question_helpfulness INT, -- I changed helpfulness to question_helpfulness
-    reported INT
+    question_reported INT
 );
 
 CREATE TABLE answers (
     answer_id SERIAL PRIMARY Key NOT NULL,
     answer_question_id INT REFERENCES questions(question_id),
-    body VARCHAR(1000) NOT NULL,
-    date DATE,
+    answer_body VARCHAR(1000) NOT NULL,
+    answer_date DATE,
     answerer_name VARCHAR(60) NOT NULL,
     answerer_email VARCHAR(60) NOT NULL,
     answer_helpfulness INT,
-    reported INT
+    answer_reported INT
 );
 
 CREATE TABLE answers_photos (
