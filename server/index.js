@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // GET ALL QUESTIONS FOR A PRODUCT
 app.get("/qa/:product_id", (req, res) => {
-  pool
+  return pool
     .getAllQuestions(req.params.product_id)
     .then((results) => res.send(results))
     .then(() => res.sendStatus(200))
@@ -27,7 +27,7 @@ app.get("/qa/:product_id", (req, res) => {
 
 // GET ALL ANSWERS FOR A QUESTION
 app.get("/qa/:question_id/answers", (req, res) => {
-  pool
+  return pool
     .getAllAnswers(req.params.question_id) // , req.query.page, req.query.count
     .then((results) => res.send(results))
     .catch((err) => console.log(err));
@@ -37,7 +37,7 @@ app.get("/qa/:question_id/answers", (req, res) => {
 
 // POST A QUESTION
 app.post("/qa/:product_id", (req, res) => {
-  pool
+  return pool
     .postQuestion(req.params.product_id, req.body)
     .then(() => res.sendStatus(201))
     .catch((err) => console.log(err));
@@ -45,7 +45,7 @@ app.post("/qa/:product_id", (req, res) => {
 
 // POST AN ANSWER
 app.post("/qa/:question_id/answers", (req, res) => {
-  pool
+  return pool
     .postAnswer(req.params.question_id, req.body)
     .catch((err) => console.log(err));
 });
@@ -54,7 +54,7 @@ app.post("/qa/:question_id/answers", (req, res) => {
 
 // PUT QUESTION HELPFUL
 app.put("/qa/question/:question_id/helpful", (req, res) => {
-  pool
+  return pool
     .putQuestionHelpful(req.params.question_id)
     .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
@@ -62,7 +62,7 @@ app.put("/qa/question/:question_id/helpful", (req, res) => {
 
 // PUT QUESTION REPORTED
 app.put("/qa/question/:question_id/report", (req, res) => {
-  pool
+  return pool
     .putQuestionReported(req.params.question_id)
     .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
@@ -70,7 +70,7 @@ app.put("/qa/question/:question_id/report", (req, res) => {
 
 // PUT ANSWER HELPFUL
 app.put("/qa/answer/:answer_id/report", (req, res) => {
-  pool
+  return pool
     .putAnswerHelpful(req.params.answer_id)
     .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
@@ -78,7 +78,7 @@ app.put("/qa/answer/:answer_id/report", (req, res) => {
 
 // PUT ANSWER REPORTED
 app.put("/qa/answer/:answer_id/report", (req, res) => {
-  pool
+  return pool
     .putAnswerReported(req.params.answer_id)
     .then(() => res.sendStatus(204))
     .catch((err) => console.log(err));
