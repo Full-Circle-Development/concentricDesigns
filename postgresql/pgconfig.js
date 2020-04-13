@@ -93,12 +93,38 @@ const getAllQuestions = (product_id) => {
 
 // GET ALL ANSWERS FOR A GIVEN QUESTION
 
-const getAllAnswers = (question_id) => {
-  const values = [question_id];
-  return pool
-    .query("SELECT * FROM answers WHERE question_id = $1", values)
-    .then((res) => res.rows)
-    .catch((err) => err);
+const getAllAnswers = (question_id, page, count) => {
+  const values = [question_id, page, count];
+  return (
+    pool
+      .query(
+        `SELECT DISTINCT ON (answers.answer_id) answers.*, answers_photos.photo_id, answers_photos.url 
+    FROM answers LEFT JOIN answers_photos ON answers.answer_id = answers_photos.photo_answer_id 
+    WHERE answers.answer_question_id = $1 ORDER BY answers.answer_id ASC`
+      )
+      // .query("SELECT * FROM answers WHERE answer_question_id = $1", values)
+      .then((res) => {
+        let resRows = res.rows;
+        let resultObj = {
+          question: values[0],
+          page: Number(values[1]) || 0,
+          count: Number(values[2]) || 5,
+          results: [],
+        };
+        let photosArr = [];
+        let answerObj = {};
+
+        for (let i = 0; i < resRows.length; i++) {
+          let photosObj = {};
+          if (resRows.url) {
+            photosObj[id] = resRows.photo_id;
+            photosObj[url] = resRows.url;
+          }
+          photosArr.push(photosObj);
+        }
+      })
+      .catch((err) => err)
+  );
 };
 
 // POST A QUESTION
@@ -126,36 +152,38 @@ const postQuestion = (product_id, question) => {
 
 const postAnswer = (question_id, answer) => {
   let photosArr = answer.photos;
+  // valuesP = [photosArr]
   values = [
     question_id,
     answer.answer_body,
     // answer.answer_date, // defaulting in DB to current_timestamp
     answer.answerer_name,
     answer.answerer_email,
+    answer.photos,
     // answer.reported, // defaulting in DB to 0
     // answer.helpful, // defaulting in DB to 0
   ];
-  /*
-  WITH ins1 AS (
-   INSERT INTO sample(firstname, lastname)
-   VALUES ('fai55', 'shaggk')
--- ON     CONFLICT DO NOTHING                -- optional addition in Postgres 9.5+
-   RETURNING id AS user_id
-   )
-, ins2 AS (
-   INSERT INTO sample1 (user_id, adddetails)
-   SELECT user_id, 'ss' FROM ins1
-   -- RETURNING user_id                      -- only if used in turn
-   )
-INSERT INTO sample2 (user_id, value)         -- same here
-SELECT user_id, 'ss' FROM ins1;
-  */
-  return pool
-    .query(
-      "INSERT INTO answers (question_id, answer_body, answerer_name, answerer_email) VALUES ($1, $2, $3, $4)",
-      values
-    )
-    .then(() => true);
+  return (
+    pool
+      .query(
+        `WITH new_answer AS (
+          INSERT INTO answers (answer_question_id, answer_body, answerer_name, answerer_email) VALUES ($1, $2, $3, $4) 
+          ON CONFLICT DO NOTHING RETURNING answer_id AS a_id
+          )
+          INSERT INTO answers_photos (photo_answer_id, url)
+          SELECT a_id, $5 FROM new_answer;
+      `,
+        values
+      )
+      // the $5 might not work....
+
+      // .query(
+      //   "INSERT INTO answers (question_id, answer_body, answerer_name, answerer_email) VALUES ($1, $2, $3, $4)",
+      //   values
+      // )
+      .then(() => true)
+      .catch((err) => err)
+  );
 };
 
 // PUT A QUESTION HELPFUL

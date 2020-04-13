@@ -28,7 +28,7 @@ app.get("/qa/:product_id", (req, res) => {
 // GET ALL ANSWERS FOR A QUESTION
 app.get("/qa/:question_id/answers", (req, res) => {
   pool
-    .getAllAnswers(req.params.question_id)
+    .getAllAnswers(req.params.question_id, req.query.page, req.query.count)
     .then((results) => res.send(results))
     .catch((err) => err);
 });
