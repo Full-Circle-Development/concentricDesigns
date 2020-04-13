@@ -93,50 +93,56 @@ const getAllQuestions = (product_id) => {
 
 // GET ALL ANSWERS FOR A GIVEN QUESTION
 
-const getAllAnswers = (question_id, page, count) => {
-  const values = [question_id, page, count];
+const getAllAnswers = (question_id) => {
+  const values = [question_id];
+
   return (
     pool
       .query(
         `SELECT DISTINCT ON (answers.answer_id) answers.*, answers_photos.photo_id, answers_photos.url 
     FROM answers LEFT JOIN answers_photos ON answers.answer_id = answers_photos.photo_answer_id 
-    WHERE answers.answer_question_id = $1 ORDER BY answers.answer_id ASC`
+    WHERE answers.answer_question_id = $1 ORDER BY answers.answer_id ASC`,
+        values
       )
       // .query("SELECT * FROM answers WHERE answer_question_id = $1", values)
       .then((res) => {
         let resRows = res.rows;
         let resultObj = {
           question: values[0],
-          page: 0, //Number(values[1]) || 0,
-          count: 5, //Number(values[2]) || 5,
+          page: Number(values[1]) || 0,
+          count: Number(values[2]) || 5,
           results: [],
         };
-        let photosArr = [];
+        // let photosArr = [];
         // let answerObj = {};
-
+        // return resultObj;
         for (let i = 0; i < resRows.length; i++) {
+          let photosArr = [];
+
+          if (resRows[i].photo_id) {
+            let photosObj = {
+              id: resRows[i].photo_id,
+              url: resRows[i].url,
+            };
+            photosArr.push(photosObj);
+          }
+
           let answerObj = {
             answer_id: resRows[i].answer_id,
             body: resRows[i].answer_body,
-            day: resRows[i].answer_date,
+            date: resRows[i].answer_date,
             answerer_name: resRows[i].answerer_name,
             helpfulness: resRows[i].answer_helpfulness,
-            photos: [],
+            photos: photosArr,
           };
 
-          let photosObj = {};
-          if (resRows.photo_id) {
-            photosObj[id] = resRows.photo_id;
-            photosObj[url] = resRows.url;
-          }
-          answersObj.push(photosObj);
+          //  let photosObj = {};
 
-          //if (resRows.answer_id) {
-          //}
           resultObj.results.push(answerObj);
-          photosObj = {};
-          answerObj = {};
+          // photosObj = {};
+          // answerObj = {};
         }
+
         return resultObj;
       })
       .catch((err) => err)
