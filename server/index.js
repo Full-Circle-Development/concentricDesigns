@@ -1,15 +1,15 @@
-// import express from "express";
+require("newrelic");
 const express = require("express");
-// import pool from "../postgresql/pgconfig.js";
 const pool = require("../postgresql/pgconfig.js");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const db = require("../postgresql/pgconfig.js").default;
-// const exitHook = require("exit-hook");
+const compression = require("compression");
 
 const app = express();
 const PORT = 3000;
 
+app.use(compression());
 app.use(bodyParser.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,7 +22,7 @@ app.get("/qa/:product_id", (req, res) => {
     .getAllQuestions(req.params.product_id)
     .then((results) => res.send(results))
     .then(() => res.sendStatus(200))
-    .catch((err) => err);
+    .catch((err) => console.log(err));
 });
 
 // GET ALL ANSWERS FOR A QUESTION
@@ -30,7 +30,7 @@ app.get("/qa/:question_id/answers", (req, res) => {
   pool
     .getAllAnswers(req.params.question_id) // , req.query.page, req.query.count
     .then((results) => res.send(results))
-    .catch((err) => err);
+    .catch((err) => console.log(err));
 });
 
 ///// POST ROUTES /////
@@ -47,7 +47,6 @@ app.post("/qa/:product_id", (req, res) => {
 app.post("/qa/:question_id/answers", (req, res) => {
   pool
     .postAnswer(req.params.question_id, req.body)
-    .then(() => res.sendStatus(201))
     .catch((err) => console.log(err));
 });
 
