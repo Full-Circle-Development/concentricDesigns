@@ -96,7 +96,11 @@ const getAllAnswers = (question_id) => {
         for (let i = 0; i < resRows.length; i++) {
           let photosArr = [];
 
-          if (resRows[i].photo_id) {
+          if (
+            typeof resRows[i].url === "string" &&
+            resRows[i].url !== "{}" &&
+            resRows[i].url !== ""
+          ) {
             let photosObj = {
               id: resRows[i].photo_id,
               url: resRows[i].url,
@@ -112,8 +116,6 @@ const getAllAnswers = (question_id) => {
             helpfulness: resRows[i].answer_helpfulness,
             photos: photosArr,
           };
-
-          //  let photosObj = {};
 
           resultObj.results.push(answerObj);
           // photosObj = {};
@@ -168,8 +170,8 @@ const postAnswer = (question_id, answer) => {
           INSERT INTO answers (answer_question_id, answer_body, answerer_name, answerer_email) VALUES ($1, $2, $3, $4) 
          RETURNING answer_id AS a_id
           )
-          INSERT INTO answers_photos (photo_answer_id, url)
-          SELECT a_id, $5 FROM new_answer;
+          WHERE EXISTS (INSERT INTO answers_photos (photo_answer_id, url)
+          SELECT a_id, $5 FROM new_answer)
       `,
         values
       )
