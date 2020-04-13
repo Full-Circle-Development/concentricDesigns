@@ -68,29 +68,6 @@ const getAllQuestions = (product_id) => {
     .catch((err) => err);
 };
 
-// ex.
-// {
-//   "product_id": "5",
-//   "results": [{
-//         "question_id": 37,
-//         "question_body": "Why is this product cheaper here than other sites?",
-//         "question_date": "2018-10-18T00:00:00.000Z",
-//         "asker_name": "williamsmith",
-//         "question_helpfulness": 4,
-//         "reported": 0,
-//         "answers": {
-//           68: {
-//             "id": 68,
-//             "body": "We are selling it here without any markup from the middleman!",
-//             "date": "2018-08-18T00:00:00.000Z",
-//             "answerer_name": "Seller",
-//             "helpfulness": 4,
-//             "photos": []
-//             // ...
-//           }
-//         }
-//       },
-
 // GET ALL ANSWERS FOR A GIVEN QUESTION
 
 const getAllAnswers = (question_id) => {
@@ -148,42 +125,6 @@ const getAllAnswers = (question_id) => {
       .catch((err) => err)
   );
 };
-// ex
-/*
-{
-  "question": "1",
-  "page": 0,
-  "count": 5,
-  "results": [
-    {
-      "answer_id": 8,
-      "body": "What a great question!",
-      "date": "2018-01-04T00:00:00.000Z",
-      "answerer_name": "metslover",
-      "helpfulness": 8,
-      "photos": [],
-    },
-    {
-      "answer_id": 5,
-      "body": "Something pretty durable but I can't be sure",
-      "date": "2018-01-04T00:00:00.000Z",
-      "answerer_name": "metslover",
-      "helpfulness": 5,
-      "photos": [{
-          "id": 1,
-          "url": "urlplaceholder/answer_5_photo_number_1.jpg"
-        },
-        {
-          "id": 2,
-          "url": "urlplaceholder/answer_5_photo_number_2.jpg"
-        },
-        // ...
-      ]
-    },
-    // ...
-  ]
-}
-*/
 
 // POST A QUESTION
 
@@ -209,15 +150,14 @@ const postQuestion = (product_id, question) => {
 // POST AN ANSWER
 
 const postAnswer = (question_id, answer) => {
-  let photosArr = answer.photos;
-  // valuesP = [photosArr]
-  values = [
+  let photoURL = answer.photos || [];
+  const values = [
     question_id,
-    answer.answer_body,
+    answer.body,
     // answer.answer_date, // defaulting in DB to current_timestamp
-    answer.answerer_name,
-    answer.answerer_email,
-    answer.photos,
+    answer.name,
+    answer.email,
+    photoURL,
     // answer.reported, // defaulting in DB to 0
     // answer.helpful, // defaulting in DB to 0
   ];
@@ -226,7 +166,7 @@ const postAnswer = (question_id, answer) => {
       .query(
         `WITH new_answer AS (
           INSERT INTO answers (answer_question_id, answer_body, answerer_name, answerer_email) VALUES ($1, $2, $3, $4) 
-          ON CONFLICT DO NOTHING RETURNING answer_id AS a_id
+         RETURNING answer_id AS a_id
           )
           INSERT INTO answers_photos (photo_answer_id, url)
           SELECT a_id, $5 FROM new_answer;
@@ -239,6 +179,14 @@ const postAnswer = (question_id, answer) => {
       //   "INSERT INTO answers (question_id, answer_body, answerer_name, answerer_email) VALUES ($1, $2, $3, $4)",
       //   values
       // )
+      // .then((res) => {
+      //   let resRows = res.rows;
+      //   for (let i = 0; i < resRows.length; i++) {
+      //     if (!resRows[i].url) {
+      //       values[4] = [];
+      //     }
+      //   }
+      // })
       .then(() => true)
       .catch((err) => err)
   );
