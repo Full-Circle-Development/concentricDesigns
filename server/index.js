@@ -1,4 +1,4 @@
-require("newrelic");
+// require("newrelic");
 const express = require("express");
 const pool = require("../postgresql/pgconfig.js");
 const cors = require("cors");
