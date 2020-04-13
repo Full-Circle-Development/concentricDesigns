@@ -2,5 +2,7 @@ node_modules
 questions.csv
 answers.csv
 answers_photos.csv
-
-
+bigDataQ.csv
+public
+newrelic.js
+newrelic_agent.log

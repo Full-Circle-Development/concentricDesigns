@@ -4,7 +4,7 @@
   "description": "Back-End Optimization of project-titan",
   "main": "index.js",
   "scripts": {
-    "start-mongo": "nodemon src/mongodb/index.js",
+    "start": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,10 +19,13 @@
   "homepage": "https://github.com/Full-Circle-Development/concentricDesigns#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "exit-hook": "^2.2.0",
     "express": "^4.17.1",
-    "mongoose": "^5.9.7",
-    "pg": "^8.0.0",
-    "validator": "^13.0.0"
+    "faker": "^4.1.0",
+    "newrelic": "^6.5.0",
+    "pg": "^8.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
