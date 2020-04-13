@@ -159,7 +159,7 @@ const postAnswer = (question_id, answer) => {
     // answer.answer_date, // defaulting in DB to current_timestamp
     answer.name,
     answer.email,
-    photoURL,
+    photoURL, // has a default in DB to []
     // answer.reported, // defaulting in DB to 0
     // answer.helpful, // defaulting in DB to 0
   ];
@@ -170,8 +170,8 @@ const postAnswer = (question_id, answer) => {
           INSERT INTO answers (answer_question_id, answer_body, answerer_name, answerer_email) VALUES ($1, $2, $3, $4) 
          RETURNING answer_id AS a_id
           )
-          WHERE EXISTS (INSERT INTO answers_photos (photo_answer_id, url)
-          SELECT a_id, $5 FROM new_answer)
+         INSERT INTO answers_photos (photo_answer_id, url)
+          SELECT a_id, $5 FROM new_answer
       `,
         values
       )
