@@ -21,7 +21,6 @@ app.get("/qa/:product_id", (req, res) => {
   return pool
     .getAllQuestions(req.params.product_id)
     .then((results) => res.send(results))
-    .then(() => res.sendStatus(200))
     .catch((err) => console.log(err));
 });
 
