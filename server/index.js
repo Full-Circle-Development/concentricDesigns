@@ -1,4 +1,4 @@
-// require("newrelic");
+require("newrelic");
 const express = require("express");
 const pool = require("../postgresql/pgconfig.js");
 const cors = require("cors");
@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const compression = require("compression");
 
 const app = express();
-const PORT = 5432;
+const PORT = 3000;
 
 app.use(compression());
 app.use(bodyParser.json());
