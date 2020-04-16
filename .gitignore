@@ -7,3 +7,7 @@ public
 newrelic.js
 newrelic_agent.log
 sdc.pem
+.vscode
+launch.json
+settings.json
+console_error.log
