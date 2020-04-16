@@ -65,7 +65,7 @@ const getAllQuestions = (product_id) => {
 
       return resultObj;
     })
-    .catch((err) => err);
+    .catch((err) => console.log(err));
 };
 
 // GET ALL ANSWERS FOR A GIVEN QUESTION
