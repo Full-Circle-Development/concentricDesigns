@@ -19,87 +19,117 @@ const getAllQuestions = (product_id) => {
     .then((res) => {
       let productID = values[0];
       let resRow = res.rows;
-      let answersObj = {};
+      let answersArr = [];
+      let photosObj = {};
+      let questionObj = {};
+      let questionsArr = [];
+      let answersPhotos = [];
       let resultObj = {
         product_id: productID,
         results: [],
       };
 
       for (let i = 0; i < resRow.length; i++) {
-        let qObj = {
-          question_id: resRow[i].question_id,
-          question_body: resRow[i].question_body,
-          question_date: resRow[i].question_date,
-          asker_name: resRow[i].asker_name,
-          question_helpfulness: resRow[i].question_helpfulness, // not pulling correct number
-          reported: resRow[i].question_reported, // not pulling correct number
-          answers: {},
-        };
-        resultObj.results.push(qObj);
+        // if (!resultObj.results.includes(question_id[resRow[i].question_id])) {
+        if (resRow[i].question_id) {
+          let qObj = {
+            question_id: resRow[i].question_id,
+            question_body: resRow[i].question_body,
+            question_date: resRow[i].question_date,
+            asker_name: resRow[i].asker_name,
+            question_helpfulness: resRow[i].question_reported, // not pulling correct number
+            reported: resRow[i].question_helpfulness, // not pulling correct number
+            answers: {},
+          };
+
+          // for (let j = 0; j < questionsArr.length; j++) {
+          //   if (questionsArr[j].questions_id === qObj.question_id) {
+          //     continue;
+          //   }
+          //   questionsArr.push(qObj);
+          // }
+        }
+
+        if (resRow[i].answer_question_id) {
+          //  === resRow[i].question_id
+          answersArr.push({
+            id: resRow[i].answer_id,
+            body: resRow[i].answer_body,
+            date: resRow[i].answer_date,
+            answerer_name: resRow[i].answerer_name,
+            helpfulness: resRow[i].answer_reported,
+            photos: {},
+          });
+        }
+
+        if (resRow[i].url) {
+          answersPhotos.push({
+            answer_photo_id: resRow[i].answer_id,
+            url: resRow[i].url,
+          });
+        }
       }
-
-      if (answer_question_id === qObj.question_id) {
-        qObj.answers[answer_id] = {
-          id: answer_id,
-          body: answer_body,
-          date: answer_date,
-          answerer_name: answerer_name,
-          helpfulness: answer_helpfulness,
-          photos: {},
-        };
-      }
-
-      //   if (answer_question_id === qObj.question_id) {
-      //     qObj[answer_question_id].answers = {
-      //     id: resRow[i].answer_id,
-      //     body: resRow[i].answer_body,
-      //     date: resRow[i].answer_date,
-      //     answerer_name: resRow[i].answerer_name,
-      //     helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
-      //     photos: photosArr
-      //   }
-      // }
-      // for (let i = 0; i < resRow.length; i++) {
-      //   let photosArr = [];
-      //   if (resRow[i].url) {
-      //     photosArr.push(resRow[i].url); // currently NOT getting all URL's
-      //   }
-
-      //   if (resRow[i].answer_id) {
-      //     answersObj[resRow[i].answer_id] = {
-      //       id: resRow[i].answer_id,
-      //       body: resRow[i].answer_body,
-      //       date: resRow[i].answer_date,
-      //       answerer_name: resRow[i].answerer_name,
-      //       helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
-      //       photos: photosArr,
-      //     };
-
-      //     if (resRow[i + 1]) {
-      //       if (resRow[i].question_id === resRow[i + 1].question_id) {
-      //         continue;
-      //       }
-      //     }
-      //   }
-
-      //   let questionsObj = {
-      //     question_id: resRow[i].question_id,
-      //     question_body: resRow[i].question_body,
-      //     question_date: resRow[i].question_date,
-      //     asker_name: resRow[i].asker_name,
-      //     question_helpfulness: resRow[i].question_helpfulness, // not pulling correct number
-      //     reported: resRow[i].question_reported, // not pulling correct number
-      //     answers: answersObj,
-      //   };
-
-      //   resultObj.results.push(questionsObj);
-      //   photosArr = [];
-      //   answersObj = {};
-      // }
-
+      resultObj.results.push(questionsArr);
       return resultObj;
     })
-    .catch((err) => err);
+    .catch((err) => console.log(err));
+
+  //   if (answer_question_id === qObj.question_id) {
+  //     qObj[answer_question_id].answers = {
+  //     id: resRow[i].answer_id,
+  //     body: resRow[i].answer_body,
+  //     date: resRow[i].answer_date,
+  //     answerer_name: resRow[i].answerer_name,
+  //     helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
+  //     photos: photosArr
+  //   }
+  // }
+  // for (let i = 0; i < resRow.length; i++) {
+  //   let photosArr = [];
+  //   if (resRow[i].url) {
+  //     photosArr.push(resRow[i].url); // currently NOT getting all URL's
+  //   }
+
+  //   if (resRow[i].answer_id) {
+  //     answersObj[resRow[i].answer_id] = {
+  //       id: resRow[i].answer_id,
+  //       body: resRow[i].answer_body,
+  //       date: resRow[i].answer_date,
+  //       answerer_name: resRow[i].answerer_name,
+  //       helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
+  //       photos: photosArr,
+  //     };
+
+  //     if (resRow[i + 1]) {
+  //       if (resRow[i].question_id === resRow[i + 1].question_id) {
+  //         continue;
+  //       }
+  //     }
+  //   }
+
+  //   let questionsObj = {
+  //     question_id: resRow[i].question_id,
+  //     question_body: resRow[i].question_body,
+  //     question_date: resRow[i].question_date,
+  //     asker_name: resRow[i].asker_name,
+  //     question_helpfulness: resRow[i].question_helpfulness, // not pulling correct number
+  //     reported: resRow[i].question_reported, // not pulling correct number
+  //     answers: answersObj,
+  //   };
+
+  //   resultObj.results.push(questionsObj);
+  //   photosArr = [];
+  //   answersObj = {};
+  // }
+  //}
+  // questionsArr2 = [];
+  // for (let k = 0; k < questionsArr.length; k++) {
+  //   if (questionsArr[k].question_id) {
+  //     if (questionsArr[k].question_id === questionsArr[k + 1].question_id) {
+  //       continue;
+  //     }
+  //   }
+  //   questionsArr2.push(questionsArr[k]);
 };
 
 // GET ALL ANSWERS FOR A GIVEN QUESTION
