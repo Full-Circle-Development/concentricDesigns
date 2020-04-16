@@ -1,17 +1,17 @@
 require("newrelic");
 const express = require("express");
 const pool = require("../postgresql/pgconfig.js");
-// const cors = require("cors");
+//const cors = require("cors");
 const bodyParser = require("body-parser");
 //const db = require("../postgresql/pgconfig.js").default;
 const compression = require("compression");
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 app.use(compression());
 app.use(bodyParser.json());
-// app.use(cors());
+//app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 ///// GET ROUTES /////

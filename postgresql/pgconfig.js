@@ -13,7 +13,7 @@ const getAllQuestions = (product_id) => {
       `SELECT DISTINCT ON (questions.question_id, answers.answer_id) questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.question_helpfulness, questions.question_reported, answers.*, answers_photos.url 
       FROM questions LEFT JOIN answers ON questions.question_id = answers.answer_question_id 
       LEFT JOIN answers_photos ON answers.answer_id = answers_photos.photo_answer_id 
-      WHERE questions.product_id = $1 ORDER BY questions.question_id ASC, answers.answer_id ASC`, // ORDER BY questions.question_id ASC
+      WHERE questions.product_id = $1 ORDER BY questions.question_id ASC, answers.answer_id ASC`,
       values
     )
     .then((res) => {
