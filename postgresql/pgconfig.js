@@ -37,7 +37,7 @@ const getAllQuestions = (product_id) => {
             body: resRow[i].answer_body,
             date: resRow[i].answer_date,
             answerer_name: resRow[i].answerer_name,
-            helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
+            helpfulness: resRow[i].answer_reported,
             photos: photosArr,
           };
 
@@ -53,8 +53,8 @@ const getAllQuestions = (product_id) => {
           question_body: resRow[i].question_body,
           question_date: resRow[i].question_date,
           asker_name: resRow[i].asker_name,
-          question_helpfulness: resRow[i].question_helpfulness, // not pulling correct number
-          reported: resRow[i].question_reported, // not pulling correct number
+          question_helpfulness: resRow[i].question_reported,
+          reported: resRow[i].question_helpfulness,
           answers: answersObj,
         };
 
@@ -113,7 +113,7 @@ const getAllAnswers = (question_id) => {
             body: resRows[i].answer_body,
             date: resRows[i].answer_date,
             answerer_name: resRows[i].answerer_name,
-            helpfulness: resRows[i].answer_helpfulness,
+            helpfulness: resRows[i].answer_reported,
             photos: photosArr,
           };
 
