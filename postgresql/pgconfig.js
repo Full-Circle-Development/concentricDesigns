@@ -10,10 +10,10 @@ const getAllQuestions = (product_id) => {
   const values = [product_id]; // might need to account for queries like page, sort, and count
   return pool
     .query(
-      `SELECT DISTINCT ON (questions.question_id, answers.answer_id) questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.question_helpfulness, questions.question_reported, answers.*, answers_photos.url 
+      `SELECT questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.question_helpfulness, questions.question_reported, answers.*, answers_photos.url 
       FROM questions LEFT JOIN answers ON questions.question_id = answers.answer_question_id 
       LEFT JOIN answers_photos ON answers.answer_id = answers_photos.photo_answer_id 
-      WHERE questions.product_id = $1 ORDER BY questions.question_id ASC, answers.answer_id ASC`, // ORDER BY questions.question_id ASC
+      WHERE questions.product_id = $1`,
       values
     )
     .then((res) => {
@@ -26,42 +26,76 @@ const getAllQuestions = (product_id) => {
       };
 
       for (let i = 0; i < resRow.length; i++) {
-        let photosArr = [];
-        if (resRow[i].url) {
-          photosArr.push(resRow[i].url); // currently NOT getting all URL's
-        }
-
-        if (resRow[i].answer_id) {
-          answersObj[resRow[i].answer_id] = {
-            id: resRow[i].answer_id,
-            body: resRow[i].answer_body,
-            date: resRow[i].answer_date,
-            answerer_name: resRow[i].answerer_name,
-            helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
-            photos: photosArr,
-          };
-
-          if (resRow[i + 1]) {
-            if (resRow[i].question_id === resRow[i + 1].question_id) {
-              continue;
-            }
-          }
-        }
-
-        let questionsObj = {
+        let qObj = {
           question_id: resRow[i].question_id,
           question_body: resRow[i].question_body,
           question_date: resRow[i].question_date,
           asker_name: resRow[i].asker_name,
           question_helpfulness: resRow[i].question_helpfulness, // not pulling correct number
           reported: resRow[i].question_reported, // not pulling correct number
-          answers: answersObj,
+          answers: {},
         };
-
-        resultObj.results.push(questionsObj);
-        photosArr = [];
-        answersObj = {};
+        resultObj.results.push(qObj);
       }
+
+      if (answer_question_id === qObj.question_id) {
+        qObj.answers[answer_id] = {
+          id: answer_id,
+          body: answer_body,
+          date: answer_date,
+          answerer_name: answerer_name,
+          helpfulness: answer_helpfulness,
+          photos: {},
+        };
+      }
+
+      //   if (answer_question_id === qObj.question_id) {
+      //     qObj[answer_question_id].answers = {
+      //     id: resRow[i].answer_id,
+      //     body: resRow[i].answer_body,
+      //     date: resRow[i].answer_date,
+      //     answerer_name: resRow[i].answerer_name,
+      //     helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
+      //     photos: photosArr
+      //   }
+      // }
+      // for (let i = 0; i < resRow.length; i++) {
+      //   let photosArr = [];
+      //   if (resRow[i].url) {
+      //     photosArr.push(resRow[i].url); // currently NOT getting all URL's
+      //   }
+
+      //   if (resRow[i].answer_id) {
+      //     answersObj[resRow[i].answer_id] = {
+      //       id: resRow[i].answer_id,
+      //       body: resRow[i].answer_body,
+      //       date: resRow[i].answer_date,
+      //       answerer_name: resRow[i].answerer_name,
+      //       helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
+      //       photos: photosArr,
+      //     };
+
+      //     if (resRow[i + 1]) {
+      //       if (resRow[i].question_id === resRow[i + 1].question_id) {
+      //         continue;
+      //       }
+      //     }
+      //   }
+
+      //   let questionsObj = {
+      //     question_id: resRow[i].question_id,
+      //     question_body: resRow[i].question_body,
+      //     question_date: resRow[i].question_date,
+      //     asker_name: resRow[i].asker_name,
+      //     question_helpfulness: resRow[i].question_helpfulness, // not pulling correct number
+      //     reported: resRow[i].question_reported, // not pulling correct number
+      //     answers: answersObj,
+      //   };
+
+      //   resultObj.results.push(questionsObj);
+      //   photosArr = [];
+      //   answersObj = {};
+      // }
 
       return resultObj;
     })
