@@ -7,6 +7,7 @@ public
 newrelic.js
 newrelic_agent.log
 sdc.pem
+sdc-psql.pem
 .vscode
 launch.json
 settings.json
