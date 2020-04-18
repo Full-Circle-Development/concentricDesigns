@@ -13,7 +13,7 @@ const getAllQuestions = (product_id) => {
       `SELECT DISTINCT ON (questions.question_id, answers.answer_id) questions.question_id, questions.question_body, questions.question_date, questions.asker_name, questions.asker_email, questions.question_helpfulness, questions.question_reported, answers.*, answers_photos.url 
       FROM questions LEFT JOIN answers ON questions.question_id = answers.answer_question_id 
       LEFT JOIN answers_photos ON answers.answer_id = answers_photos.photo_answer_id 
-      WHERE questions.product_id = $1 ORDER BY questions.question_id ASC, answers.answer_id ASC`, // ORDER BY questions.question_id ASC
+      WHERE questions.product_id = $1 ORDER BY questions.question_id ASC, answers.answer_id ASC`,
       values
     )
     .then((res) => {
@@ -37,7 +37,7 @@ const getAllQuestions = (product_id) => {
             body: resRow[i].answer_body,
             date: resRow[i].answer_date,
             answerer_name: resRow[i].answerer_name,
-            helpfulness: resRow[i].answer_helpfulness, // not pulling correct number
+            helpfulness: resRow[i].answer_reported,
             photos: photosArr,
           };
 
@@ -53,8 +53,8 @@ const getAllQuestions = (product_id) => {
           question_body: resRow[i].question_body,
           question_date: resRow[i].question_date,
           asker_name: resRow[i].asker_name,
-          question_helpfulness: resRow[i].question_helpfulness, // not pulling correct number
-          reported: resRow[i].question_reported, // not pulling correct number
+          question_helpfulness: resRow[i].question_reported,
+          reported: resRow[i].question_helpfulness,
           answers: answersObj,
         };
 
@@ -65,7 +65,7 @@ const getAllQuestions = (product_id) => {
 
       return resultObj;
     })
-    .catch((err) => err);
+    .catch((err) => console.log(err));
 };
 
 // GET ALL ANSWERS FOR A GIVEN QUESTION
@@ -113,7 +113,7 @@ const getAllAnswers = (question_id) => {
             body: resRows[i].answer_body,
             date: resRows[i].answer_date,
             answerer_name: resRows[i].answerer_name,
-            helpfulness: resRows[i].answer_helpfulness,
+            helpfulness: resRows[i].answer_reported,
             photos: photosArr,
           };
 
