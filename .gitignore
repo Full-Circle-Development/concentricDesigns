@@ -8,6 +8,7 @@ newrelic.js
 newrelic_agent.log
 sdc.pem
 sdc-psql.pem
+bailey.pem
 .vscode
 launch.json
 settings.json
