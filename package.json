@@ -18,11 +18,11 @@
   },
   "homepage": "https://github.com/Full-Circle-Development/concentricDesigns#readme",
   "dependencies": {
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "exit-hook": "^2.2.0",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "faker": "^4.1.0",
     "newrelic": "^6.5.0",
     "pg": "^8.0.0"
